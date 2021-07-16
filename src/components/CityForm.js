@@ -11,7 +11,7 @@ import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import { WEATHER_KEY } from '../keys';
+import { WEATHER_KEY, URL_CLIMA, URL_API } from '../config';
 
 const useStyles = makeStyles((theme) => ({
     fab: {
@@ -47,10 +47,9 @@ export default function CityForm() {
 
     if (cityValue) {
         // metric parameter is for Celcius Unit
-        const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${cityValue},&appid=${WEATHER_KEY}`;
+        const API_URL = `${URL_CLIMA}?q=${cityValue},&appid=${WEATHER_KEY}`;
         const response = await fetch(API_URL);
         const data = await response.json();
-        console.log(data)
 
         const city = {
             "id": data.id,
@@ -60,13 +59,7 @@ export default function CityForm() {
             "lon" : data.coord.lon
         };
 
-        console.log(city)
-
-        axios.post(`https://localhost:44338/api/clima`, city )
-        .then(res => {
-            console.log(res);
-            console.log(res.data);
-        })
+        axios.post(URL_API, city );
 
     }
 
