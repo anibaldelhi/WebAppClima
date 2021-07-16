@@ -17,15 +17,15 @@ const DataTable = () => {
      fetch("https://localhost:44338/api/clima")
       .then((data) => data.json())
       .then((data) => setTableData(data))
-   })
+   });
   
     return (
-      <div style={{height: 700, width: '100%'}}>
+      <div style={{height: "75vh", width: '100%'}}>
         <DataGrid
           title="Listado de ciudades" 
           rows={tableData}
           columns={columns}
-          pageSize={5}
+          pageSize={20}
           checkboxSelection
           disableSelectionOnClick
         />
