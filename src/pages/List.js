@@ -1,7 +1,9 @@
+import DataTable from "../components/DataTable";
+
 export default function ListPage(){
     return (
         <div>
-            <h1>Listado</h1>
+            <DataTable/>
         </div>
     )
 }
