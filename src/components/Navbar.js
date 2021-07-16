@@ -19,7 +19,7 @@ export default function Navbar(){
 
     return (
         <div>
-            <AppBar position="static" color="primary" style={{ background: '#0d703a' }}>
+            <AppBar position="static" color="primary">
                 <Toolbar>
                     <IconButton color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         <MenuIcon />
