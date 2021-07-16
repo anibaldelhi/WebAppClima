@@ -19,13 +19,13 @@ export default function Navbar(){
 
     return (
         <div>
-            <AppBar position="static" color="primary">
+            <AppBar position="static" color="primary" style={{ background: '#0d703a' }}>
                 <Toolbar>
                     <IconButton color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6">
-                        Clima en tu ciudad
+                        Clima
                     </Typography>
                     <Menu id="simple-menu"
                         anchorEl={anchorEl}

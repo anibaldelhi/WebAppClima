@@ -5,7 +5,7 @@ import ListPage from '../pages/List';
 import ErrorPage from '../pages/Error';
 import Navbar from '../components/Navbar';
 
-export default function App() {
+export default function Routes() {
   return (
     <BrowserRouter>
       <Navbar />
