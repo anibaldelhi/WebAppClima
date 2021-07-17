@@ -11,6 +11,8 @@ import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import { WEATHER_KEY, URL_CLIMA, URL_API } from '../config';
 
 const useStyles = makeStyles((theme) => ({
@@ -27,53 +29,93 @@ const useStyles = makeStyles((theme) => ({
 export default function CityForm() {
   const classes = useStyles();
 
-  const [open, setOpen] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
+  const [openMensaje, setOpenMensaje] = useState(false);
   const [ciudad, setCiudad] = useState('');
+  const [tipoMensaje, setTipoMensaje] = useState('');
+  const [mensaje, setMensaje] = useState('');
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleOpenAdd = () => {
+    setOpenAdd(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+  };
+
+  const handleOpenMensaje = (tipo = 'error',valor = 'Error general') => {
+    setTipoMensaje(tipo);
+    setMensaje(valor);
+    setOpenMensaje(true);
+  };
+
+
+  const handleCloseMensaje = () => {
+    setOpenMensaje(false);
   };
 
   const handleAgregar = async (e) => {
     e.preventDefault();
 
-    setOpen(false);
-    const cityValue = ciudad;
-    setCiudad('');
-
-    if (cityValue) {
+    if (ciudad) {
         // metric parameter is for Celcius Unit
-        const API_URL = `${URL_CLIMA}?q=${cityValue},&appid=${WEATHER_KEY}`;
-        const response = await fetch(API_URL);
-        const data = await response.json();
-
-        const city = {
-            "id": data.id,
-            "name": data.name,
-            "timezone" : data.timezone,
-            "lat" : data.coord.lat,
-            "lon" : data.coord.lon
-        };
-
-        axios.post(URL_API, city );
+        const URL = `${URL_CLIMA}?q=${ciudad},&appid=${WEATHER_KEY}`;
+        axios.get(URL)
+        .then(function (o) {
+          // handle success
+          console.log(o);
+            const city = {
+              "id": o.data.id,
+              "name": o.data.name,
+              "timezone" : o.data.timezone,
+              "lat" : o.data.coord.lat,
+              "lon" : o.data.coord.lon
+          };
+          
+          axios.post(URL_API, city )
+          .then(function (response) {
+            // handle success
+            handleOpenMensaje('success','Se ha guardado exitosamente la ciudad.');
+            setOpenAdd(false);
+          })
+          .catch(function (error) {
+            // handle error
+            if(!error.response)
+              handleOpenMensaje('error','Error de comunicación con el backend.');
+            else if(error.response?.status === 400)
+              handleOpenMensaje('error','Ciudad ya existe.');
+            else
+              handleOpenMensaje('error','Error al guardar.');
+          })
+        })
+        .catch(function (error) {
+          // handle error
+          if(error.response?.status === 404)
+            handleOpenMensaje('warning','No se encontró ciudad.');
+          else
+            handleOpenMensaje('warning','Error al consultar clima de la ciudad.');
+        })
 
     }
-
+    else{
+      handleOpenMensaje('warning', 'Debe detallar la ciudad');
+    }
+    setCiudad('');
   };
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
 
   return (
     <div>
       <Tooltip title="Add" aria-label="add">
-        <Fab color="secondary" className={classes.absolute} onClick={handleClickOpen}>
+        <Fab color="secondary" className={classes.absolute} onClick={handleOpenAdd}>
             <AddIcon />
         </Fab>
       </Tooltip>
 
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog open={openAdd} onClose={handleCloseAdd} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Ciudades</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -86,12 +128,12 @@ export default function CityForm() {
             label="Ciudad"
             type="text"
             value = {ciudad} 
-			onChange={(e) => setCiudad(e.target.value)} 
+			      onChange={(e) => setCiudad(e.target.value)} 
             fullWidth
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleCloseAdd} color="primary">
             Cancelar
           </Button>
           <Button onClick={handleAgregar} color="primary">
@@ -99,6 +141,13 @@ export default function CityForm() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={openMensaje} autoHideDuration={6000} onClose={handleCloseMensaje}>
+        <Alert onClose={handleCloseMensaje} severity={tipoMensaje}>
+          {mensaje}
+        </Alert>
+      </Snackbar>
+
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React, {useState,useEffect} from 'react';
 import {DataGrid} from '@material-ui/data-grid';
 
 const columns = [
-    {field : 'id', headerName : 'ID', width : 150},
+    {field : 'id', headerName : 'ID', width : 200},
     {field : 'name', headerName : 'Name', width : 300},
     {field : 'timezone', headerName : 'Timezone', width : 150},
     {field : 'lon', headerName : 'Longitude', width : 150},
@@ -20,15 +20,18 @@ const DataTable = () => {
    });
   
     return (
-      <div style={{height: "75vh", width: '100%'}}>
-        <DataGrid
-          title="Listado de ciudades" 
-          rows={tableData}
-          columns={columns}
-          pageSize={20}
-          checkboxSelection
-          disableSelectionOnClick
-        />
+      <div style={{ height: 400, width: '100%' }}>
+        <div style={{ display: 'flex', height: '100%' }}>
+          <div style={{ flexGrow: 1 }}>
+            <DataGrid
+              title="Listado de ciudades" 
+              rows={tableData}
+              columns={columns}
+              pageSize={20}
+              checkboxSelection
+            />
+          </div>
+        </div>
       </div>
     )
   }
