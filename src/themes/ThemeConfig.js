@@ -1,7 +1,7 @@
 import {createTheme} from '@material-ui/core/styles';
 
-const theme = createTheme({
-    pallete :{
+const appTheme = createTheme({
+    palette :{
         primary:{
             main : '#0d703a',
         },
@@ -11,4 +11,4 @@ const theme = createTheme({
     }
 });
 
-export default theme;
+export default appTheme;
