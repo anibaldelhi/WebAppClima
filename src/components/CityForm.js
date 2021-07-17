@@ -69,7 +69,8 @@ export default function CityForm() {
               "name": o.data.name,
               "timezone" : o.data.timezone,
               "lat" : o.data.coord.lat,
-              "lon" : o.data.coord.lon
+              "lon" : o.data.coord.lon,
+              "weather" : o.data.weather
           };
           
           axios.post(URL_API, city )
@@ -110,7 +111,7 @@ export default function CityForm() {
   return (
     <div>
       <Tooltip title="Add" aria-label="add">
-        <Fab color="secondary" className={classes.absolute} onClick={handleOpenAdd}>
+        <Fab color="primary" className={classes.absolute} onClick={handleOpenAdd}>
             <AddIcon />
         </Fab>
       </Tooltip>
