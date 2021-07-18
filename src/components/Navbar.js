@@ -1,51 +1,39 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+import { AppBar, Toolbar, Typography} from '@material-ui/core';
 import {Link} from 'react-router-dom';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import HomeIcon from '@material-ui/icons/Home';
-import CloudIcon from '@material-ui/icons/Cloud';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+
+const useStyles = makeStyles((theme) => ({
+    appBar: {
+      borderBottom: `1px solid ${theme.palette.divider}`,
+    },
+    toolbar: {
+      flexWrap: 'wrap',
+    },
+    toolbarTitle: {
+      flexGrow: 1,
+    },
+    link: {
+      margin: theme.spacing(1, 1.5),
+    },
+  }));
 
 export default function Navbar(){
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-    setAnchorEl(null);
-    };
-
+    const classes = useStyles();
     return (
         <div>
-            <AppBar position="static" color="primary">
-                <Toolbar>
-                    <IconButton color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6">
+            <AppBar position="static" color="primary" elevation={0} className={classes.appBar}>
+                <Toolbar className={classes.toolbar}>
+                    <Typography variant="h6" color="inherit" noWrap className={classes.toolbarTitle}>
                         Clima
                     </Typography>
-                    <Menu id="simple-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                        >
-                        <MenuItem component={Link} to="/" color="inherit">
-                            <ListItemIcon>
-                                <HomeIcon />
-                            </ListItemIcon>
-                            <Typography variant="inherit">Inicio</Typography>
-                        </MenuItem>
-                        <MenuItem component={Link} to="/list" color="inherit">
-                            <ListItemIcon>
-                                <CloudIcon />
-                            </ListItemIcon>
-                            <Typography variant="inherit">Datos hidrometeorológicos</Typography>
-                        </MenuItem>
-                    </Menu>
+                    <Button  component={Link} to="/" color="inherit" className={classes.link}>
+                        Inicio
+                    </Button >
+                    <Button component={Link} to="/list" variant="button" color="inherit" className={classes.link}>
+                        Datos hidrometereológicos
+                    </Button>
                 </Toolbar>
             </AppBar>
         </div>
