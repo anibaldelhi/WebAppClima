@@ -1,17 +1,11 @@
 import React, {useState,useEffect} from 'react';
-import {Table, TableContainer, TableHead, TableCell, TableBody, TableRow, Button} from '@material-ui/core';
+import {Table, TableContainer, TableHead, TableCell, TableBody, TableRow} from '@material-ui/core';
 import axios from 'axios';
 import {Edit, Delete} from '@material-ui/icons';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
-
 import AgregarCiudad from './AgregarCiudad';
 import ModificarCiudad from './ModificarCiudad';
-
+import EliminarCiudad from './EliminarCiudad';
 
 import { URL_API } from '../config';
 
@@ -58,14 +52,6 @@ const abrirMensaje = (_tipo = "info", _descripcion = "Mensaje por defecto.") => 
     })
   }
 
-  const peticionDelete=async()=>{
-    await axios.delete(URL_API +"/" + ciudadSeleccionada.id)
-    .then(response=>{
-      setData(data.filter(ciudad=>ciudad.id!==ciudadSeleccionada.id));
-      abrirCerrarModalEliminar();
-    })
-  }
-
   useEffect(()=>{
     peticionGet();
   },[data]);
@@ -82,28 +68,6 @@ const abrirMensaje = (_tipo = "info", _descripcion = "Mensaje por defecto.") => 
     setCiudadSeleccionada(ciudad);
     (caso==='Editar')?abrirCerrarModalEditar():abrirCerrarModalEliminar()
   }
-
-  const bodyEliminar=(
-    <div>
-      <Dialog open={modalEliminar} onClose={abrirCerrarModalEliminar}  aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description">
-        <DialogTitle id="alert-dialog-title">{"Eliminar ciudad seleccionada"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            ¿Está seguro(a) que desea eliminar la ciudad seleccionada: {ciudadSeleccionada?.nombre} ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={peticionDelete} variant="contained" color="primary">
-            Eliminar
-          </Button>
-          <Button onClick={abrirCerrarModalEliminar} variant="contained" color="secondary">
-            Cancelar
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  )
 
   return (
     <div className="App">
@@ -137,14 +101,16 @@ const abrirMensaje = (_tipo = "info", _descripcion = "Mensaje por defecto.") => 
        </Table>
      </TableContainer>
 
-     {bodyEliminar}
-
-     <AgregarCiudad mensaje = {mensaje} openMensaje = {openMensaje} cerrarMensaje={cerrarMensaje}
+    <AgregarCiudad mensaje = {mensaje} openMensaje = {openMensaje} cerrarMensaje={cerrarMensaje}
      abrirMensaje = {abrirMensaje} peticionGet = {peticionGet}/>
 
-     <ModificarCiudad  mensaje = {mensaje} openMensaje = {openMensaje} abrirMensaje = {abrirMensaje} 
+    <ModificarCiudad  mensaje = {mensaje} openMensaje = {openMensaje} abrirMensaje = {abrirMensaje} 
      cerrarMensaje={cerrarMensaje}  modalEditar={modalEditar} abrirCerrarModalEditar={abrirCerrarModalEditar} 
      ciudadSeleccionada={ciudadSeleccionada} setCiudadSeleccionada={setCiudadSeleccionada} />
+
+    <EliminarCiudad  mensaje = {mensaje} openMensaje = {openMensaje} abrirMensaje = {abrirMensaje} 
+     cerrarMensaje={cerrarMensaje}  modalEliminar={modalEliminar} abrirCerrarModalEliminar={abrirCerrarModalEliminar} 
+     ciudadSeleccionada={ciudadSeleccionada} data={data} setData={setData} />
 
      </div>
   );
