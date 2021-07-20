@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from 'react';
-import {Table, Divider, TableContainer, TableHead, TableCell, TableBody, TableRow, Button, TextField, Typography} from '@material-ui/core';
+import {Table, TableContainer, TableHead, TableCell, TableBody, TableRow, Button} from '@material-ui/core';
 import axios from 'axios';
 import {Edit, Delete} from '@material-ui/icons';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,9 +7,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
+
 import AgregarCiudad from './AgregarCiudad';
+import ModificarCiudad from './ModificarCiudad';
 
 
 import { URL_API } from '../config';
@@ -50,27 +51,10 @@ const abrirMensaje = (_tipo = "info", _descripcion = "Mensaje por defecto.") => 
     setOpenMensaje(true);
   };
 
-
-
-  const handleChange=e=>{
-    const {name, value}=e.target;
-    setCiudadSeleccionada(prevState=>({
-      ...prevState,
-      [name]: parseFloat(value)
-    }))
-  }
-
   const peticionGet=async()=>{
     await axios.get(URL_API)
     .then(response=>{
       setData(response.data);
-    })
-  }
-
-  const peticionPut=async()=>{
-    await axios.put(URL_API+"/"+ciudadSeleccionada.id, ciudadSeleccionada)
-    .then(function (obj) {
-      abrirCerrarModalEditar();
     })
   }
 
@@ -99,45 +83,6 @@ const abrirMensaje = (_tipo = "info", _descripcion = "Mensaje por defecto.") => 
     (caso==='Editar')?abrirCerrarModalEditar():abrirCerrarModalEliminar()
   }
 
-  const bodyEditar=(
-    <div>
-      <Dialog open={ modalEditar} onClose={abrirCerrarModalEditar}>
-        <Container>
-          <Typography variant='h4'>Editar Ciudad {ciudadSeleccionada?.name} </Typography>
-          <Divider />
-          <TextField type="number" fullWidth name="id" label="ID" value = {ciudadSeleccionada?.id} InputProps={{readOnly: true,}}/>
-          <TextField required type="number" fullWidth name="timezone" label="Timezone" onChange={handleChange} value = {ciudadSeleccionada?.timezone}/>
-          <TextField required type="number" fullWidth name="lon" label="Longitude" onChange={handleChange} value = {ciudadSeleccionada?.coord.lon}/>
-          <TextField required type="number" fullWidth name="lat" label="Latitude" onChange={handleChange} value = {ciudadSeleccionada?.coord.lat}/>
-          <Divider/>
-          <TableContainer component={Paper}>
-       <Table>
-         <TableHead>
-           <TableRow>
-             <TableCell>ID</TableCell>
-             <TableCell>Main</TableCell>
-             <TableCell>Description</TableCell>
-           </TableRow>
-         </TableHead>
-         <TableBody>
-           {ciudadSeleccionada.weather.map( data =>(
-             <TableRow key={data.id}>
-               <TableCell>{data.id}</TableCell>
-               <TableCell>{data.main}</TableCell>
-               <TableCell>{data.description}</TableCell>
-             </TableRow>
-           ))}
-         </TableBody>
-       </Table>
-     </TableContainer>
-          <div align="right">
-            <Button color="primary" variant="contained"  onClick={()=>peticionPut()}>Guardar</Button>
-            <Button color="secondary" variant="contained"  onClick={()=>abrirCerrarModalEditar()}>Cancelar</Button>
-          </div>
-        </Container>
-      </Dialog>
-    </div>
-  )
   const bodyEliminar=(
     <div>
       <Dialog open={modalEliminar} onClose={abrirCerrarModalEliminar}  aria-labelledby="alert-dialog-title"
@@ -192,12 +137,14 @@ const abrirMensaje = (_tipo = "info", _descripcion = "Mensaje por defecto.") => 
        </Table>
      </TableContainer>
 
-     {bodyEditar}
-
      {bodyEliminar}
 
      <AgregarCiudad mensaje = {mensaje} openMensaje = {openMensaje} cerrarMensaje={cerrarMensaje}
-     peticionGet = {peticionGet} abrirMensaje = {abrirMensaje}/>
+     abrirMensaje = {abrirMensaje} peticionGet = {peticionGet}/>
+
+     <ModificarCiudad  mensaje = {mensaje} openMensaje = {openMensaje} abrirMensaje = {abrirMensaje} 
+     cerrarMensaje={cerrarMensaje}  modalEditar={modalEditar} abrirCerrarModalEditar={abrirCerrarModalEditar} 
+     ciudadSeleccionada={ciudadSeleccionada} setCiudadSeleccionada={setCiudadSeleccionada} />
 
      </div>
   );
